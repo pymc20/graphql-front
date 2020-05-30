@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1"

@@ -1,7 +1,80 @@
 import Head from 'next/head'
 import React from "react"
+import bcrypt from 'bcrypt-nodejs'
+import jwt from 'jsonwebtoken'
+import _ from 'lodash'
 
-export default function Home() {
+let pass:String, id:String;
+
+const onChangePass = (e:any) => {
+  pass = e.target.value;
+}
+
+const onChangeId = (e:any) => {
+  id = e.target.value;
+}
+
+const onClickSingIn = async () => {
+  if(_.isEmpty(id) && _.isEmpty(pass)) {
+    return
+  } else {
+    const query = `
+        {
+          getHash(id: "${id}") {
+            hash
+            salt
+          }
+        }
+      `;
+    const url = "http://localhost:8000/graphql";
+      const opts:RequestInit = {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query })
+      };
+      fetch(url, opts)
+        .then(res => res.json())
+        .then(({data}) => {
+          const hash = _.get(data,"getHash.hash","");
+          const salt = _.get(data,"getHash.salt","");
+          if(bcrypt.compareSync(pass,hash)) {
+            const token = jwt.sign({
+              exp: new Date().getTime() + 3600000,
+              iat: new Date().getTime()
+            }, 'secret');
+            console.log(token);
+            const query = `
+            {
+              signIn(data: {
+                id: "${id}"
+                token: "${token}"
+              }) {
+                done
+              }
+            }
+          `;
+          const url = "http://localhost:8000/graphql";
+          const opts:RequestInit = {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ query })
+          };
+          fetch(url, opts)
+            .then(res => console.log(res))
+            .then(console.log)
+            .catch(console.error);
+          } else {
+
+          }})
+          .catch(err=>console.log(err))
+        }
+}
+
+export default () => {
   return (
     <div className="container">
       <Head>
@@ -11,12 +84,12 @@ export default function Home() {
         <h1>GraphQL Service Page</h1>
         <div className="sign-in-container">
           <div className="sign-in-id">
-            <input></input>
+            <input onChange={onChangeId}></input>
           </div>
           <div className="sign-in-pass">
-            <input type="password"></input>
+            <input type="password" onChange={onChangePass}></input>
           </div>
-          <div className="sign-in-button">
+          <div className="sign-in-button" onClick={onClickSingIn}>
             Sign In
           </div>
         </div>
