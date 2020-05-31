@@ -3,6 +3,7 @@ import React from "react"
 import bcrypt from 'bcrypt-nodejs'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
+import Router from 'next/router'
 
 let pass:String, id:String;
 
@@ -64,8 +65,16 @@ const onClickSingIn = async () => {
             body: JSON.stringify({ query })
           };
           fetch(url, opts)
-            .then(res => console.log(res))
-            .then(console.log)
+            .then(res => res.json())
+            .then(({data}) => {
+              const done = _.get(data,"signIn.done","");
+              if(done) {
+                console.log(done);
+                Router.push('/main');
+              } else {
+                console.log(done);
+              }
+            })
             .catch(console.error);
           } else {
 
