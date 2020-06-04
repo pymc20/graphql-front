@@ -5,10 +5,12 @@ module.exports = {
         {
           targets: {
             node: 'current',
+            esmodules: true
           },
         },
       ],
       '@babel/preset-typescript',
       '@babel/preset-react',
-    ],
+      'next/babel'
+    ]
   };
