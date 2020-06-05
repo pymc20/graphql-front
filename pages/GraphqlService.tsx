@@ -12,7 +12,7 @@ type state = {
     typeDisplay: string
 };
 
-export default class Main extends React.Component<{},state> {
+export default class GraphqlService extends React.Component<{},state> {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,81 +56,6 @@ export default class Main extends React.Component<{},state> {
           Created by bym
         </span>
       </footer>
-
-      <style jsx>{`
-        .container {
-          min-height: 98vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .main {
-          width: 100%;
-          flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: stretch;
-        }
-
-        .side {
-            flex: 1;
-        }
-
-        .content {
-            flex: 5;
-        }
-
-        footer {
-          background: #fbfbfb;
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        .main-menu-schema {
-            cursor: pointer;
-            user-select: none;
-       }
-
-       .main-menu-schema:hover {
-            cursor: pointer;
-            background: #ececec;
-        }
-
-       .main-menu-type {
-            cursor: pointer;
-            user-select: none;
-       }
-
-       .main-menu-type:hover {
-            cursor: pointer;
-            background: #ececec;
-        }
-
-       .sub-menu {
-            cursor: pointer;
-            margin: 10px 10px 10px 10px;
-       }
-
-       .sub-menu:hover {
-            cursor: pointer;
-            margin: 10px 10px 10px 10px;
-            background: #ececec;
-        }
-       .sub-menu-mutation {
-
-       }
-
-        body {
-            background: #b5a3ff;
-        }
-
-      `}</style>
     </div>
         )
     }
