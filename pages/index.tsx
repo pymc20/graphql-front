@@ -90,6 +90,7 @@ class Index extends React.Component<props,state> {
         `;
         const { signIn } = await this.graphqlPost(query);
         const { done } = signIn;
+        console.log('!@#!@#',done);
         if(done) {
           Router.push('/graphqlService/schema');
         }

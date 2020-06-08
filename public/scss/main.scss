@@ -156,3 +156,33 @@ img {
     border: 1px solid white;
     transform: rotate(45deg);
 }
+
+.loading-spin {
+    border: 16px solid #fff;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+.loading-text {
+    top: 0;
+    margin: 60px;
+    position:absolute;
+    animation: blank 2s linear infinite;
+}
+.loading-container {
+    position:relative;
+}
+
+@keyframes blank {
+    0% { color: #fff}
+    50% { color: #000}
+    100% { color: #fff}
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -6,13 +6,6 @@ import Link from 'next/link'
 
 export default class Index extends React.Component {
 
-    static async getInitialProps(context) {
-        const { ctx, Component, router } = context;
-        let pageProps = {}
-        console.log(window);
-        return { pageProps }
-    }
-
     render() {
         return (
             <MainContents/>
