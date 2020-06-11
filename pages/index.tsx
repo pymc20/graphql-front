@@ -74,12 +74,10 @@ class Index extends React.Component<props,state> {
         `;
       const { getHash } = await this.graphqlPost(query);
       const { hash, salt } = getHash;
-      console.log(this.props);
       if(bcrypt.compareSync(pass,hash)) {
         const token = jwt.sign({
-          exp: new Date().getTime() + 3600000,
-          iat: new Date().getTime()
-        }, publicRuntimeConfig.secret);
+          data: 'data'
+        }, publicRuntimeConfig.secret, {expiresIn: '1h'});
         this.props.addTokenAction(token);
         const query = `
           {
@@ -90,7 +88,6 @@ class Index extends React.Component<props,state> {
         `;
         const { signIn } = await this.graphqlPost(query);
         const { done } = signIn;
-        console.log('!@#!@#',done);
         if(done) {
           Router.push('/graphqlService/schema');
         }
