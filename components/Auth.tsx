@@ -3,10 +3,14 @@ import SideMenu from '../components/SideMenu'
 import jwt from 'jsonwebtoken'
 import Router from 'next/router';
 
-class Auth extends React.Component{
+function Auth(props:any) {
 
-    introRender = (Component, auth) => {
-        if(auth && Component.displayName !== 'Connect(Index)') {
+    const { Component } = props;
+    const store = JSON.parse(localStorage.getItem('persist:root'));
+    const { token } = store ? JSON.parse(store.TokenReducer) : {token:''};
+
+    const introRender = (Component:any, token:string) => {
+        if(token && Component.displayName !== 'Connect(Login)') {
             return (
                 <>
                     <div className="content-container">
@@ -20,7 +24,7 @@ class Auth extends React.Component{
                     </div>
                 </>
             )
-        } else if(!auth && Component.displayName === 'Connect(Index)'){
+        } else if(!token && Component.displayName === 'Connect(Login)'){
             return (
                 <>
                     <Component/>
@@ -39,28 +43,22 @@ class Auth extends React.Component{
         }
     }
 
-    render() {
-        const { Component, pageProps } = this.props;
-        const store = JSON.parse(localStorage.getItem('persist:root'));
-        const { token } = JSON.parse(store.TokenReducer);
-        let auth = false;
-        jwt.verify(token, 'secret', (err, decode) => {
-            console.log(err);
-            if(err === null) {
-                auth = true;
-                if(Router.pathname === '/') {
-                    Router.push('/graphqlService/schema')
-                }
-            } else if(Router.pathname !== '/') {
-                Router.push('/');
+
+    jwt.verify(token, 'secret', (err:any, decode:any) => {
+        console.log(err);
+        if(err === null) {
+            if(Router.pathname === '/') {
+                Router.push('/graphqlService/schema')
             }
-        });
-        return (
-            <div className="most-outside-container">
-                {this.introRender(Component,auth)}
-            </div>
-        )
-    }
+        } else if(Router.pathname !== '/') {
+            Router.push('/');
+        }
+    });
+    return (
+        <div className="most-outside-container">
+            {introRender(Component,token)}
+        </div>
+    )
 }
 
 export default Auth

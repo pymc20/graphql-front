@@ -1,12 +1,11 @@
 import React from 'react'
 
-export default class Index extends React.Component {
-    
-    render() {
-        return (
-            <div>
-                test
-            </div>
-        )
-    }
+function TypeIndex() {
+    return (
+        <div>
+            test
+        </div>
+    )
 }
+
+export default TypeIndex

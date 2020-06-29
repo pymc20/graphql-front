@@ -1,81 +1,71 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { withRouter } from 'next/router'
 import _ from 'lodash'
 
-type state = {
-    menuData: any
-}
+function SideMenu(props) {
 
-
-class SideMenu extends React.Component<{router},state> {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            menuData: [
+    const [menuData,setMenuData] = useState([
+        {
+            name: "Schema",
+            children: [
                 {
-                    name: "Schema",
-                    children: [
-                        {
-                            name: "Query",
-                            children: []
-                        },
-                        {
-                            name: "Mutation",
-                            children: []
-                        }
-                    ]
+                    name: "Query",
+                    children: []
                 },
                 {
-                    name: "Type",
-                    children: [
-                        {
-                            name: "Type",
-                            children: []
-                        },
-                        {
-                            name: "Enum",
-                            children: []
-                        },
-                        {
-                            name: "Interface",
-                            children: []
-                        },
-                        {
-                            name: "Union",
-                            children: []
-                        }
-                    ]
+                    name: "Mutation",
+                    children: []
                 }
-            ],
-        };
-    }
+            ]
+        },
+        {
+            name: "Type",
+            children: [
+                {
+                    name: "Type",
+                    children: []
+                },
+                {
+                    name: "Enum",
+                    children: []
+                },
+                {
+                    name: "Interface",
+                    children: []
+                },
+                {
+                    name: "Union",
+                    children: []
+                }
+            ]
+        }
+    ])
 
-    onLinkClick = () => {
+    const onLinkClick = () => {
         
     }
 
-    menuRender = (menu:any,idx:number,path:string) => {
-        const { router } = this.props;
+    const menuRender = (menu:any,idx:number,path:string) => {
+        const { router } = props;
         const children = menu['children']
         const currentPath = path + `/${_.lowerCase(menu['name'])}`;
         if(children && children instanceof Array && children.length > 0) {
             return (
                 <div key={menu['name'] + idx} className="side-menu-container">
                     <Link href={currentPath}>
-                        <a className={`side-menu ${router.asPath === currentPath ? 'active' : ''}`} onClick={this.onLinkClick}>
+                        <a className={`side-menu ${router.asPath === currentPath ? 'active' : ''}`} onClick={onLinkClick}>
                             {menu['name']}
                         </a>
                     </Link>
-                    {children.map(item => this.menuRender(item,idx+1,currentPath))}
+                    {children.map(item => menuRender(item,idx+1,currentPath))}
                 </div>
             )
         } else {
             return (
                 <div key={menu['name'] + idx} className="side-sub-menu-container">
                     <Link href={currentPath}>
-                        <a className={`side-sub-menu ${router.asPath === currentPath ? 'active' : ''}`} onClick={this.onLinkClick}>
+                        <a className={`side-sub-menu ${router.asPath === currentPath ? 'active' : ''}`} onClick={onLinkClick}>
                             {menu['name']}
                         </a>
                     </Link>
@@ -84,15 +74,14 @@ class SideMenu extends React.Component<{router},state> {
         }
     }
 
-    render() {
-        return (
-            <div className="content-side">
-                {this.state.menuData.map((item,idx) => {
-                    return this.menuRender(item,idx,'/graphqlService');
-                })}
-            </div>
-        )
-    }
+    return (
+        <div className="content-side">
+            {menuData.map((item,idx) => {
+                return menuRender(item,idx,'/graphqlService');
+            })}
+        </div>
+    )
+    
 }
 
 export default withRouter(SideMenu)

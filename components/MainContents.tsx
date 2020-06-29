@@ -1,25 +1,13 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import _ from 'lodash'
 import * as THREE from 'three';
 
-type state = {
-    schemaDisplay: string,
-    typeDisplay: string
-};
+function MainContents() {
 
-export default class MainContents extends React.Component<{},state> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            schemaDisplay: 'none',
-            typeDisplay: 'none'
-        }
-    }
+    const [schemaDisplay,setSchemaDisplay] = useState('')
+    const [typeDisplay,setTypeDisplay] = useState('')
 
-    componentDidMount() {
-        this.threeRender();
-    }
-    threeRender = () => {
+    const threeRender = () => {
         const container = document.getElementById("content-canvas-container");
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -43,9 +31,14 @@ export default class MainContents extends React.Component<{},state> {
         };
         animate();
     }
-    render() {
-        return (
-            <div id="content-canvas"/>
-        )
-    }
+
+    useEffect(() => {
+        threeRender();
+    })
+
+    return (
+        <div id="content-canvas"/>
+    )
 }
+
+export default MainContents

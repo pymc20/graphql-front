@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import bcrypt from 'bcrypt-nodejs'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
@@ -7,28 +7,12 @@ import { connect } from 'react-redux';
 import { addTokenAction } from '../redux/actions/TokenAction';
 import getConfig from 'next/config'
 
-interface state {
-  id:String,
-  pass:String,
-  modalVisible:Boolean
-}
+function Login(props:any) {
+  const [id,setId] = useState('');
+  const [pass,setPass] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
-interface props {
-  addTokenAction:any;
-}
-
-class Index extends React.Component<props,state> {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: '',
-      pass: '',
-      modalVisible: false
-    }
-  }
-
-  graphqlPost = async (query) => {
+  const graphqlPost = async (query:string) => {
     const url = "http://localhost:8000/graphql";
     const opts:RequestInit = {
       method: "POST",
@@ -42,23 +26,21 @@ class Index extends React.Component<props,state> {
     return data;
   }
 
-  onChangePass = (e:any) => {
+  const onChangePass = (e:any) => {
     const pass = e.target.value;
-    this.setState({pass})
+    setPass(pass)
   }
 
-  onChangeId = (e:any) => {
+  const onChangeId = (e:any) => {
     const id = e.target.value;
-    this.setState({id})
+    setId(id)
   }
 
-  onClickSignUp = () => {
-    const { modalVisible } = this.state;
-    this.setState({modalVisible: !modalVisible})
+  const onClickSignUp = () => {
+    setModalVisible(!modalVisible)
   }
 
-  onClickSignIn = async () => {
-    const { id, pass } = this.state;
+  const onClickSignIn = async () => {
     if(_.isEmpty(id) && _.isEmpty(pass)) {
       return
     } else {
@@ -72,13 +54,14 @@ class Index extends React.Component<props,state> {
             }
           }
         `;
-      const { getHash } = await this.graphqlPost(query);
+      const { getHash } = await graphqlPost(query);
+      console.log(getHash)
       const { hash, salt } = getHash;
       if(bcrypt.compareSync(pass,hash)) {
         const token = jwt.sign({
           data: 'data'
         }, publicRuntimeConfig.secret, {expiresIn: '1h'});
-        this.props.addTokenAction(token);
+        props.addTokenAction(token);
         const query = `
           {
             signIn(id: "${id}") {
@@ -86,7 +69,7 @@ class Index extends React.Component<props,state> {
             }
           }
         `;
-        const { signIn } = await this.graphqlPost(query);
+        const { signIn } = await graphqlPost(query);
         const { done } = signIn;
         if(done) {
           Router.push('/graphqlService/schema');
@@ -94,49 +77,48 @@ class Index extends React.Component<props,state> {
       }
     }
   }
-  render() {
-    return (
-      <div className="sign-container">
+
+  return (
+    <div className="sign-container">
         <h1>GraphQL Service Page</h1>
         <div className="sign-in-container">
           <div className="sign-id">
-            <input onChange={this.onChangeId} placeholder="id"></input>
+            <input onChange={onChangeId} placeholder="id"></input>
           </div>
           <div className="sign-pass">
-            <input type="password" onChange={this.onChangePass} placeholder="password"></input>
+            <input type="password" onChange={onChangePass} placeholder="password"></input>
           </div>
           <div className="sign-button-container">
-            <span className="sign-button" onClick={this.onClickSignIn}>Sign In</span>
+            <span className="sign-button" onClick={onClickSignIn}>Sign In</span>
             <div className="sign-seperate"/>
-            <span className="sign-button" onClick={this.onClickSignUp}>Sign Up</span>
+            <span className="sign-button" onClick={onClickSignUp}>Sign Up</span>
           </div>
         </div>
-        <div className={`${this.state.modalVisible ? 'modal modal-visible' : 'modal'}`}>
+        <div className={`${modalVisible ? 'modal modal-visible' : 'modal'}`}>
           <div className="modal-content">
             <div className="sign-id">
-              <input onChange={this.onChangeId} placeholder="id"></input>
+              <input onChange={onChangeId} placeholder="id"></input>
             </div>
             <div className="sign-pass">
-              <input type="password" onChange={this.onChangePass} placeholder="password"></input>
+              <input type="password" onChange={onChangePass} placeholder="password"></input>
             </div>
             <h1>Sign Up</h1>
           </div>
         </div>
       </div>
-    )
-  }
+  )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state:any) => {
   return {
       TokenReducer: {...state.TokenReducer}
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch:any) => {
   return {
-      addTokenAction: (token) => dispatch(addTokenAction(token)),
+      addTokenAction: (token:any) => dispatch(addTokenAction(token)),
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Index)
+export default connect(mapStateToProps,mapDispatchToProps)(Login)
