@@ -39,6 +39,10 @@ function SideMenu(props) {
                     children: []
                 }
             ]
+        },
+        {
+            name: "Test",
+            children: []
         }
     ])
 

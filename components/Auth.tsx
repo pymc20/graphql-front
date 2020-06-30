@@ -7,7 +7,8 @@ function Auth(props:any) {
 
     const { Component } = props;
     const store = JSON.parse(localStorage.getItem('persist:root'));
-    const { token } = store ? JSON.parse(store.TokenReducer) : {token:''};
+    const tokenReducer = store ? JSON.parse(store.TokenReducer) : {};
+    const { token } = tokenReducer;
 
     const introRender = (Component:any, token:string) => {
         if(token && Component.displayName !== 'Connect(Login)') {
@@ -50,8 +51,12 @@ function Auth(props:any) {
             if(Router.pathname === '/') {
                 Router.push('/graphqlService/schema')
             }
-        } else if(Router.pathname !== '/') {
-            Router.push('/');
+        } else {
+            if(Router.pathname !== '/') {
+                Router.push('/')
+            }
+            store['TokenReducer'] = JSON.stringify({token:''})
+            localStorage.setItem('persist:root',JSON.stringify(store));
         }
     });
     return (
